@@ -5,7 +5,7 @@ export default function (state = [], action) {
 			let priceExists = false;
 
 			if (state.length > 0) {
-				state.map(function(row, index){
+				state.forEach(function(row, index){
 					if (state[index].price && newState.price && (state[index].price === newState.price)) {
 						//Price already exists, so it should only update current row.
 						priceExists = true;
@@ -31,7 +31,7 @@ export default function (state = [], action) {
 					}
 
 					if (newStateCombined.length > 0) {
-						newStateCombined.map(function(row, index){
+						newStateCombined.forEach(function(row, index){
 							if (!row || row.count === 0) {
 								newStateCombined.splice(index, 1);
 							}
@@ -39,10 +39,10 @@ export default function (state = [], action) {
 							if (!row || row.amount > 0) {
 								newStateCombined.splice(index, 1);
 							}
-							row.amount = row.amount;
+							// row.amount = row.amount;
 						});
 
-						newStateCombined.map(function(row, index){
+						newStateCombined.forEach(function(row, index){
 							if (newStateCombined[index - 1] && newStateCombined[index - 1].total) {
 								newStateCombined[index].total = (parseFloat(newStateCombined[index - 1].total) + Math.abs(parseFloat(row.amount))).toFixed(2);
 							}
@@ -54,11 +54,8 @@ export default function (state = [], action) {
 					
 					return newStateCombined;
 				}
-			break;
-
 			case 'CLEAR_ASKS': 
 				return action.newAsksData;
-			break;
 
 		default:
       		return state.slice()

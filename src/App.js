@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import Col from 'react-bootstrap/lib/Col';
-import Row from 'react-bootstrap/lib/Row';
-import Container from 'react-bootstrap/lib/Container';
 import OrderBook from './containers/OrderBook';
 
 import { Provider } from 'react-redux';
