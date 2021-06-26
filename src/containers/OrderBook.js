@@ -8,7 +8,7 @@ import clearAsksOrderBook from "../store/OrderBook/actions/clear_asks";
 import clearBidsOrderBook from "../store/OrderBook/actions/clear_bids";
 import { bindActionCreators } from "redux";
 
-const wss = new WebSocket("wss://api-pub.bitfinex.com/ws/2");
+let wss;
 class OrderBook extends Component {
   constructor(props) {
     super(props);
@@ -16,7 +16,7 @@ class OrderBook extends Component {
     this.state = {
       connectionReady: true,
       isConnected: false,
-      pres: "P0",
+      pres: 0,
       volume24h: 0,
       lastPrice: 0,
       priceChange: 0,
@@ -34,23 +34,7 @@ class OrderBook extends Component {
     this.props.clearBidsOrderBook();
     this.props.clearAsksOrderBook();
     const currentPres = this.state.pres;
-    switch (currentPres) {
-      case "P0":
-        this.setState({ pres: "P1" });
-        break;
-
-      case "P1":
-        this.setState({ pres: "P2" });
-        break;
-
-      case "P2":
-        this.setState({ pres: "P3" });
-        break;
-
-      default:
-        return;
-    }
-
+    this.setState({ pres: currentPres + 1 });
     this.subscribeToBtc();
   }
 
@@ -59,30 +43,13 @@ class OrderBook extends Component {
     this.props.clearBidsOrderBook();
     this.props.clearAsksOrderBook();
     const currentPres = this.state.pres;
-    switch (currentPres) {
-      case "P3":
-        this.setState({ pres: "P2" });
-        break;
-
-      case "P2":
-        this.setState({ pres: "P1" });
-        break;
-
-      case "P1":
-        this.setState({ pres: "P0" });
-        break;
-
-      default:
-        return;
-    }
+    this.setState({ pres: currentPres - 1 });
 
     this.subscribeToBtc();
   }
   subscribeToBtc() {
-    const self = this;
     this.setState({ isConnected: true });
-
-    function onMessageRecieved(payloadData) {
+    let onMessageRecieved = (payloadData) => {
       if (
         !payloadData.event &&
         Array.isArray(payloadData[1]) &&
@@ -95,24 +62,22 @@ class OrderBook extends Component {
           amount: parseFloat(payloadData[1][2]),
           total: parseFloat(0),
         };
-        if (tmpbookOrderRow.amount > 0) {
-          self.props.updateBidsOrderBook(tmpbookOrderRow);
-        } else {
-          self.props.updateAsksOrderBook(tmpbookOrderRow);
-        }
+        tmpbookOrderRow.amount > 0
+          ? this.props.updateBidsOrderBook(tmpbookOrderRow)
+          : this.props.updateAsksOrderBook(tmpbookOrderRow);
       }
-    }
-
+    };
+    wss = new WebSocket("wss://api-pub.bitfinex.com/ws/2");
     wss.onopen = () => {
       console.log("connected");
-      self.setState({ connectionReady: true });
+      this.setState({ connectionReady: true });
       wss.send(JSON.stringify({ event: "conf", flags: 131072 }));
       wss.send(
         JSON.stringify({
           event: "subscribe",
           channel: "book",
           pair: "tBTCUSD",
-          prec: self.state.pres,
+          prec: "P" + this.state.pres,
           len: 25,
         })
       );
@@ -126,7 +91,6 @@ class OrderBook extends Component {
 
     wss.onclose = () => {
       console.log("disconnected");
-      // automatically try to reconnect on connection loss
     };
   }
 
@@ -151,13 +115,25 @@ class OrderBook extends Component {
             disabled={this.state.zoom < 0.21}
             onClick={this.zoomOut.bind(this)}
           >
-            Zoom Out
+            Z-
           </button>
           <button
             disabled={this.state.zoom === 1}
             onClick={this.zoomIn.bind(this)}
           >
-            Zoom In
+            Z+
+          </button>
+          <button
+            disabled={this.state.pres === 0}
+            onClick={this.lessPrecision.bind(this)}
+          >
+            P-
+          </button>
+          <button
+            disabled={this.state.pres === 3}
+            onClick={this.morePrecision.bind(this)}
+          >
+            P+
           </button>
         </div>
         <div className="books-wrapper">
