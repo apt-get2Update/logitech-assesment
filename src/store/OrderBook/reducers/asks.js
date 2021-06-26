@@ -1,13 +1,12 @@
-import dataManimpulator from '../reducerUtil'
-export default function (state = [], action) {
-	switch (action.type) {
-		case 'UPDATE_ASKS_ORDER_BOOK': 
-			let newState = action.newAsksData;
-			return dataManimpulator(state, newState, true);
-			case 'CLEAR_ASKS': 
-				return action.newAsksData;
-
-		default:
-      		return state.slice()
-	}
+import dataManimpulator from "../reducerUtil";
+export default function(state = [], action) {
+  const { type, newAsksData, orderBy } = action;
+  switch (type) {
+    case "UPDATE_ASKS_ORDER_BOOK":
+      return dataManimpulator(state, newAsksData, true, orderBy);
+    case "CLEAR_ASKS":
+      return newAsksData;
+    default:
+      return state.slice();
+  }
 }

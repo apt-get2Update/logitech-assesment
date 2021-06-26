@@ -44,7 +44,6 @@ class OrderBook extends Component {
     this.props.clearAsksOrderBook();
     const currentPres = this.state.pres;
     this.setState({ pres: currentPres - 1 });
-
     this.subscribeToBtc();
   }
   subscribeToBtc() {
@@ -63,8 +62,14 @@ class OrderBook extends Component {
           total: parseFloat(0),
         };
         tmpbookOrderRow.amount > 0
-          ? this.props.updateBidsOrderBook(tmpbookOrderRow)
-          : this.props.updateAsksOrderBook(tmpbookOrderRow);
+          ? this.props.updateBidsOrderBook(
+              tmpbookOrderRow,
+              this.interFace.order
+            )
+          : this.props.updateAsksOrderBook(
+              tmpbookOrderRow,
+              this.interFace.order
+            );
       }
     };
     wss = new WebSocket("wss://api-pub.bitfinex.com/ws/2");
@@ -159,7 +164,7 @@ function mapStateToProps(state) {
   return {
     orderBookBids: state.orderBookBids,
     orderBookAsks: state.orderBookAsks,
-    tradesList: state.tradesList,
+    interFace: state.interFace,
   };
 }
 
