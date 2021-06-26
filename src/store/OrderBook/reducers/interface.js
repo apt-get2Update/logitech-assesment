@@ -1,5 +1,5 @@
 export default function(
-  state = { format: "compact", visual: "default", order: "price" },
+  state = { format: "compact", visual: "default", order: "count,price,amount,total" },
   action
 ) {
   const { type, data } = action;

@@ -6,6 +6,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #1b262d;
 }
 
 code {
@@ -15,4 +16,13 @@ code {
 
 div {
   box-sizing: border-box;
+}
+
+button {
+  border: none;
+  margin: 0 2px;
+  background-color: inherit;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
 }

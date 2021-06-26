@@ -6,8 +6,14 @@ import updateBidsOrderBook from "../store/OrderBook/actions/update_bids";
 import updateAsksOrderBook from "../store/OrderBook/actions/update_asks";
 import clearAsksOrderBook from "../store/OrderBook/actions/clear_asks";
 import clearBidsOrderBook from "../store/OrderBook/actions/clear_bids";
+import {
+  updateFormat,
+  updateVisualization,
+  updateOrder,
+} from "../store/OrderBook/actions/interface";
 import { bindActionCreators } from "redux";
-
+import Modal from "../components/OrderBook/Modal";
+import InterfaceView from "../components/OrderBook/Interface";
 let wss;
 class OrderBook extends Component {
   constructor(props) {
@@ -21,6 +27,7 @@ class OrderBook extends Component {
       lastPrice: 0,
       priceChange: 0,
       zoom: 1,
+      show: false,
     };
   }
   componentDidMount() {
@@ -62,14 +69,8 @@ class OrderBook extends Component {
           total: parseFloat(0),
         };
         tmpbookOrderRow.amount > 0
-          ? this.props.updateBidsOrderBook(
-              tmpbookOrderRow,
-              this.interFace.order
-            )
-          : this.props.updateAsksOrderBook(
-              tmpbookOrderRow,
-              this.interFace.order
-            );
+          ? this.props.updateBidsOrderBook(tmpbookOrderRow)
+          : this.props.updateAsksOrderBook(tmpbookOrderRow);
       }
     };
     wss = new WebSocket("wss://api-pub.bitfinex.com/ws/2");
@@ -111,50 +112,70 @@ class OrderBook extends Component {
   zoomIn() {
     this.setState({ zoom: this.state.zoom + 0.2 });
   }
+  handleModal(show) {
+    this.setState({ show: show });
+  }
 
   render() {
     return (
       <div>
-        <div>
-          <button
-            disabled={this.state.zoom < 0.21}
-            onClick={this.zoomOut.bind(this)}
-          >
-            Z-
-          </button>
-          <button
-            disabled={this.state.zoom === 1}
-            onClick={this.zoomIn.bind(this)}
-          >
-            Z+
-          </button>
-          <button
-            disabled={this.state.pres === 0}
-            onClick={this.lessPrecision.bind(this)}
-          >
-            P-
-          </button>
-          <button
-            disabled={this.state.pres === 3}
-            onClick={this.morePrecision.bind(this)}
-          >
-            P+
-          </button>
+        <div className="main-header">
+          <header>ORDER BOOK BTC/USD</header>
+          <div>
+            <button
+              disabled={this.state.zoom < 0.21}
+              onClick={this.zoomOut.bind(this)}
+            >
+              Z-
+            </button>
+            <button
+              disabled={this.state.zoom === 1}
+              onClick={this.zoomIn.bind(this)}
+            >
+              Z+
+            </button>
+            <button onClick={() => this.handleModal(true)}>settings</button>
+            <button
+              disabled={this.state.pres === 0}
+              onClick={this.lessPrecision.bind(this)}
+            >
+              P-
+            </button>
+            <button
+              disabled={this.state.pres === 3}
+              onClick={this.morePrecision.bind(this)}
+            >
+              P+
+            </button>
+          </div>
         </div>
         <div className="books-wrapper">
           <div className="bids-container">
             <BidsBook
               orderBookBids={this.props.orderBookBids}
               zoom={this.state.zoom}
+              visual={this.props.interFace.visual}
+              format={this.props.interFace.format}
+              order={this.props.interFace.order}
             />
           </div>
           <div className="asks-container">
             <AsksBook
               orderBookAsks={this.props.orderBookAsks}
               zoom={this.state.zoom}
+              visual={this.props.interFace.visual}
+              format={this.props.interFace.format}
+              order={this.props.interFace.order}
             />
           </div>
         </div>
+
+        <Modal
+          show={this.state.show}
+          handleClose={() => this.handleModal(false)}
+        >
+          <InterfaceView {...this.props} />
+        </Modal>
       </div>
     );
   }
@@ -175,6 +196,9 @@ function mapDispatchToProps(dispatch) {
       updateBidsOrderBook: updateBidsOrderBook,
       clearBidsOrderBook: clearBidsOrderBook,
       clearAsksOrderBook: clearAsksOrderBook,
+      updateFormat: updateFormat,
+      updateVisualization: updateVisualization,
+      updateOrder: updateOrder,
     },
     dispatch
   );

@@ -20,7 +20,7 @@ export default function(state = [], newState, asks, orderBy = "price") {
     //Sort form lowest to highest price before returning. asks
     //Sort form highest to lowest  price before returning. Bits
     newStateCombined.sort(function(a, b) {
-      return asks ? a[orderBy] - b[orderBy] : b[orderBy] - a[orderBy];
+      return asks ? a.price - b.price : b.price - a.price;
     });
 
     if (newStateCombined.length > 25) {

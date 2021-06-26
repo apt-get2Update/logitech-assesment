@@ -14,12 +14,12 @@
     display: flex;
     background-color: #1b262d;
     color: #ffff;
-	flex-wrap: wrap;
+    flex-wrap: wrap;
     overflow: hidden;
 }
 
 .reverse {
-    flex-direction: row-reverse;
+    flex-direction: row-reverse !important;
 }
 
 .table-container {
@@ -42,4 +42,15 @@
 .flex-row {
     width: calc(100% / 4);
     text-align: center;
+}
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+
+    header {
+        font-weight: 500;
+        color: #ffff
+    }
 }

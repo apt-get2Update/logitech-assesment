@@ -1,34 +1,31 @@
 import React from "react";
-import Row from './Row';
-
+import Row from "./Row";
+import Header from "./Header";
 function BidsBook(props) {
-  
   function renderBidRows() {
-    
     if (!props.orderBookBids) {
       return <h2>Loading...</h2>;
     }
-    return props.orderBookBids.map((row, index) =><Row
-      key={row.price}
-      row={row}
-      index={index}
-      books={props.orderBookBids}
-      zoom={props.zoom}
-      type={"bits"}
-    />);
-  } 
-    return (
-
-      <div className="table-container">
-      <div className="flex-table header" role="rowgroup">
-        <div className="flex-row">COUNT</div>
-        <div className="flex-row">AMOUNT</div>
-        <div className="flex-row">TOTAL</div>
-        <div className="flex-row">PRICE</div>
-      </div>
+    return props.orderBookBids.map((row, index) => (
+      <Row
+        key={row.price}
+        row={row}
+        index={index}
+        books={props.orderBookBids}
+        zoom={props.zoom}
+        type={"bits"}
+        visual={props.visual}
+        format={props.format}
+        order={props.order}
+      />
+    ));
+  }
+  return (
+    <div className="table-container">
+      <Header order={props.order} className="flex-table header" />
       {renderBidRows()}
     </div>
-    );
+  );
 }
 
 export default BidsBook;

@@ -1,8 +1,7 @@
-function updateBidsOrderBook(newBidsData, orderBy) {
+function updateBidsOrderBook(newBidsData) {
   return {
     type: 'UPDATE_BIDS_ORDER_BOOK',
     newBidsData: newBidsData,
-    orderBy: orderBy
   }
 }
 export default updateBidsOrderBook;
