@@ -1,60 +1,31 @@
-import React, { Component } from "react";
-import Table from "react-bootstrap/lib/Table";
+import React from "react";
+import Row from "./Row";
 
-class AsksBook extends Component {
-  
-  renderAskRows() {
-    let self = this;
-    if (!this.props.orderBookAsks) {
+function AsksBook(props) {
+  function renderAskRows() {
+    if (!props.orderBookAsks) {
       return <h2>Loading...</h2>;
     }
-    return this.props.orderBookAsks.map(function(row, index) {
-      let amountAbs = Math.abs(row.amount);
-      return (
-        <tr key={row.price}>
-          <td
-            style={{
-              display: index > 23 ? "none" : "initial",
-              position: "absolute",
-              left: "0px",
-              background: "rgba(139,42,2, 0.3)",
-              width: `calc(${(
-                (100 * row.total) /
-                self.props.orderBookAsks[self.props.orderBookAsks.length - 1]
-                  .total
-              ).toFixed(0) * self.props.zoom}% - 20px)`,
-              height: "37px",
-            }}
-          />
-          <td className="text-right">{row.price}</td>
-          <td className="text-right">{row.total}</td>
-          <td className="text-right">{amountAbs}</td>
-          <td className="text-center">{row.count}</td>
-        </tr>
-      );
-    });
+    return props.orderBookAsks.map((row, index) =><Row
+      key={row.price}
+      row={row}
+      index={index}
+      books={props.orderBookAsks}
+      zoom={props.zoom}
+      type={"asks"}
+    />);
   }
-
-  render() {
-    return (
-      <div>
-        <Table responsive>
-          <thead>
-            <tr>
-              <th />
-              <th className="text-right">
-                PRICE
-              </th>
-              <th className="text-right">TOTAL</th>
-              <th className="text-right">AMOUNT</th>
-              <th className="text-center">COUNT</th>
-            </tr>
-          </thead>
-          <tbody>{this.renderAskRows()}</tbody>
-        </Table>
+  return (
+    <div className="table-container">
+      <div className="flex-table header" role="rowgroup">
+        <div className="flex-row">PRICE</div>
+        <div className="flex-row">TOTAL</div>
+        <div className="flex-row">AMOUNT</div>
+        <div className="flex-row">COUNT</div>
       </div>
-    );
-  }
+      {renderAskRows()}
+    </div>
+  );
 }
 
 export default AsksBook;

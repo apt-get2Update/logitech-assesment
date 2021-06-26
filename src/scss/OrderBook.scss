@@ -1,59 +1,45 @@
-.bids-container{
-	position: relative;
-	padding-right: 1px;
+.bids-container {
+    position: relative;
+    padding-right: 1px;
+    width: 50%;
 }
 
-.ticker-container{
-	display: inline-block;
-	padding: 10px;
-	background-color: #1b262d;
-	border-radius: 3px;
+.asks-container {
+    position: relative;
+    /*padding-left: 1px;*/
+    width: 50%;
 }
 
-.ticker-container h3, .ticker-container p{
-	color: white;
+.books-wrapper {
+    display: flex;
+    background-color: #1b262d;
+    color: #ffff;
+	flex-wrap: wrap;
+    overflow: hidden;
 }
 
-.asks-container{
-	position: relative;
-	/*padding-left: 1px;*/
+.reverse {
+    flex-direction: row-reverse;
 }
 
-.table-responsive{
-	height: 925px !important;
-	overflow-y: hidden !important;
+.table-container {
+    display: block;
+    margin: 2em auto;
+    width: 100%;
+    max-width: 600px;
 }
 
-.bids-row{
-	position: relative;
+.flex-table {
+    display: flex;
+    flex-flow: row wrap;
+    transition: 0.5s;
+
+    &:first-of-type .flex-row {
+        color: white;
+    }
 }
 
-.depth-bars-bids-container{
-	position: absolute;
-	top: 37px;
-	/*right: 1px;*/
-	height: 888px !important;
-	/*width: 100%;*/
-	background-color: rgba(82,108,46, 0.6); 
-}
-
-.buttons-container{
-	padding-top: 25px;
-	padding-bottom: 25px;
-	background-color: black;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
-
-.buttons-container button{
-	float: right !important;
-}
-
-tr.buy{
-	background-color: rgba(82,108,46, 0.3); 
-}
-
-tr.sell{
-	background-color: rgba(139,42,2, 0.3); 
+.flex-row {
+    width: calc(100% / 4);
+    text-align: center;
 }
